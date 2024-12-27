@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP Webserver Settings</title>
+    <style>
+
+        /* Thêm ảnh vào trang */
+        .image-container {
+            text-align: left;
+            
+        }
+
+        .image-container img {
+            width: 6px;
+            height: auto;
+            
+        }
+
+    html {font-family: Arial; display: inline-block; text-align: center;}
+    p {  font-size: 1.2rem;}
+    body {  margin: 0;}
+    .topnav {
+            display: flex; /* Sử dụng Flexbox */
+            align-items: center; /* Căn giữa theo chiều dọc */
+            background-color: #2f4468;
+            color: white;
+            font-size: 1.7rem;
+            padding: 5px; /* Thêm khoảng cách bên trong */
+            max-height: 75px;
+        }
+
+        .topnav img {
+            margin-right: 10px; /* Khoảng cách giữa hình ảnh và tiêu đề */
+        }
+
+    .content { padding: 50px; }
+    .card { background-color: white; box-shadow: 2px 2px 12px 1px rgba(140,140,140,.5); }
+    .cards { max-width: 700px; margin: 0 auto; display: grid; grid-gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+    .reading { font-size: 2.8rem; }
+    .packet { color: #bebebe; }
+    .card.temperature { color: #fd7e14; }
+    .card.humidity { color: #1b78e2; }
+
+        .navigation {
+        text-align: left; /* Căn trái cho các nút */
+        margin-left: 20px; /* Thêm khoảng cách bên trái */
+      }
+
+      .navigation button {
+        background-color: #4851b4; /* Màu nền */
+        color: white; /* Màu chữ */
+        border: none; /* Bỏ viền */
+        padding: 10px 20px; /* Khoảng cách bên trong nút */
+        text-align: center; /* Căn giữa nội dung nút */
+        text-decoration: none; /* Bỏ gạch chân nếu có */
+        display: inline-block; /* Hiển thị theo hàng ngang */
+        font-size: 16px; /* Kích thước chữ */
+        margin: 10px 0; /* Khoảng cách giữa các nút */
+        cursor: pointer; /* Thay đổi con trỏ thành dạng nhấn */
+        border-radius: 4px; /* Bo tròn góc nút */
+        transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu */
+      }
+
+      .navigation button:hover {
+        background-color: #455da0; /* Màu nền khi di chuột */
+      }
+
+      .navigation button:active {
+        background-color: #3e438e; /* Màu nền khi nhấn */
+        transform: translateY(4px); /* Hiệu ứng nút nhấn xuống */
+      }
+
+        .topnav {
+        display: flex; /* Sử dụng Flexbox để dễ dàng căn chỉnh */
+        align-items: center; /* Căn giữa theo chiều dọc */
+        background-color: #2f4468;
+        color: white;
+        font-size: 1.7rem;
+        padding: 5px;
+      }
+
+      .topnav img {
+        margin-right: 5px;
+      }
+
+      .topnav h3 {
+        flex-grow: 1; /* Đảm bảo tiêu đề được căn giữa */
+        text-align: center;
+      }
+      
+      .logout-button {
+        background-color: #5236f4; /* Màu nền đỏ */
+        color: white; /* Màu chữ trắng */
+        border: none; /* Bỏ viền */
+        padding: 10px 20px; /* Khoảng cách bên trong nút */
+        font-size: 10px; /* Kích thước chữ */
+        cursor: pointer; /* Thay đổi con trỏ khi nhấn vào */
+        border-radius: 5px; /* Bo tròn góc nút */
+        margin-left: auto; /* Đẩy nút về phía bên phải */
+        transition: background-color 0.3s ease;
+      }
+
+      .logout-button:hover {
+        background-color: #d32f2f; /* Màu nền khi di chuột */
+      }
+
+      .logout-button:active {
+        background-color: #c62828; /* Màu nền khi nhấn */
+        box-shadow: 0 4px #666; /* Đổ bóng khi nhấn */
+        transform: translateY(2px); /* Hiệu ứng nhấn nút xuống */
+      }
+      .footer {
+            margin-top: 20px;
+            text-align: left; /* Căn trái */
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .tab {
+            width: 200px;
+            background-color: #2a3f6e;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .tab button {
+            background-color: inherit;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px;
+            text-align: left;
+            font-size: 17px;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .tab button:hover {
+            background-color: #1f2d50;
+        }
+
+        .tab button.active {
+            background-color: #1f2d50;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: white;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .input-label {
+            margin-left: 40px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .input-row input[type="text"], 
+        .input-row input[type="number"] {
+            width: 100px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .btn {
+            background-color: #2a3f6e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #1f2d50;
+        }
+
+        .input-row input:disabled {
+            background-color: #e9ecef;
+            opacity: 0.5;
+        }
+
+        h4 {
+            text-align: left; /* Căn trái */
+            font-size: 1.5rem; /* Tăng kích thước chữ */
+            margin: 0; /* Xóa khoảng cách mặc định */
+            margin-bottom: 15px;
+        }
+        /* CSS cho popup */
+        .popup {
+            display: none; /* Ẩn popup ban đầu */
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .popup.active {
+            display: block; /* Hiện popup */
+        }
+
+        .popup button {
+            margin-top: 10px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            background-color: #f44336; /* Màu nền */
+            color: white; /* Màu chữ */
+            cursor: pointer;
+        }
+
+        .overlay {
+            display: none; /* Ẩn overlay ban đầu */
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999; /* Nằm dưới popup */
+        }
+
+        .overlay.active {
+            display: block; /* Hiện overlay */
+        }
+        .table_component {
+            overflow: auto;
+            width: 60%;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .table_component table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            background-color: #fafafa;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .table_component caption {
+            caption-side: top;
+            text-align: left;
+            font-size: 1.2em;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .table_component th, .table_component td {
+            border: 1px solid #dededf;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .table_component tbody tr:nth-child(odd) td {
+            background-color: #f7f7f7;
+        }
+
+        .table_component tbody tr:hover td {
+            background-color: #e0e0e0;
+        }
+        .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+      }
+
+      .switch input { 
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgb(123, 128, 123);
+        -webkit-transition: .4s;
+        transition: .4s;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+      }
+
+      input:checked + .slider {
+        background-color: #f32128;
+      }
+
+      input:focus + .slider {
+        box-shadow: 0 0 1px #f32128;
+      }
+
+      input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+      }
+      /* Rounded sliders */
+      .slider.round {
+        border-radius: 34px;
+      }
+
+      .slider.round:before {
+        border-radius: 50%;
+      }
+    </style>
+</head>
+<body>
+      <div class="topnav">
+    <img src="/anh" alt="Device Image"> <!-- Đường dẫn đến hình ảnh -->
+    <h3 style="text-align: center">ESP WEBSERVER TEST</h3> <!-- Căn giữa tiêu đề -->
+    <button class="logout-button" onclick="logout()">Log out</button>
+</div>
+
+<div class="navigation">
+    <button onclick="window.location.href='/trangchu';">Dashboard</button>
+    <button>Setting</button>
+  </div>
+
+    <div class="container">
+        <div class="tab">
+            <button class="tablink active" onclick="openTab(event, 'advanced')">Advanced</button>
+            <button class="tablink" onclick="openTab(event, 'account')">Account</button>
+            <button class="tablink" onclick="openTab(event, 'alert')">Aleart</button>
+        </div>
+
+        <div class="content">
+            <!-- Advanced Settings Content -->
+            <div id="advanced" class="tab-content active">
+                <h4>Advanced Settings</h4>
+                <div class="input-row">
+                    <label>
+                        <input type="checkbox" id="scanArpCheckbox" onchange="toggleInputs()"> <strong>Periodic network scan ARP</strong>
+                    </label>
+                </div>
+                <div class="input-row">
+                    <span class="input-label">Period (seconds)</span>
+                    <input type="number" id="scanArpInterval" value="100" disabled>
+                </div>
+
+                <div class="input-row">
+                    <label>
+                        <input type="checkbox" id="honeypotCheckbox" onchange="toggleInputs()"> <strong>Honeypot</strong>
+                    </label>
+                </div>
+                <div class="input-row">
+                    <span class="input-label">IP</span>
+                    <input type="text" id="honeypotIP" value="192.168.0.161" disabled>
+                </div>
+
+                <div class="input-row">
+                    <label>
+                        <input type="checkbox" id="detectArpCheckbox" onchange="toggleInputs()"> <strong>Detect scan ARP</strong>
+                    </label>
+                </div>
+                <div class="input-row">
+                    <span class="input-label">Query interval (seconds)</span>
+                    <input type="number" id="detectArpInterval" value="100" disabled>
+                </div>
+                <div class="input-row">
+                    <span class="input-label">Different IPs within one minute</span>
+                    <input type="number" id="differentIps" value="50" disabled>
+                </div>
+                
+                <div style="margin-top: 40px; display: flex; justify-content: center;"> <!-- Căn giữa -->
+                <button class="btn" onclick="applySettings()">Apply Settings</button>
+                </div>
+            </div>
+
+            <!-- Account Settings Content -->
+            <div id="account" class="tab-content">
+                <h4 style="text-align: left;">Account Settings</h4>
+
+                <h1>Nhập thông tin wifi</h1>
+                <label>SSID: </label>
+                <input type="text" id="ssid"><br><br>
+                <label>PASS: </label>
+                <input type="text" id="pass"><br><br>
+                
+                <button onclick="clicksendwifiinfo()">Send</button>
+                <p id="demo"></p>
+
+                    <div class="input-row">
+                        <label>
+                            <strong style="margin-left: 20px;">Admin</strong>
+                        </label>
+                    </div>
+                    <div class="input-row">
+                        <span class="input-label">Username</span>
+                        <input type="text" id="useradmin" placeholder="Enter username" style="margin-right: 55%; width: 20%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                    <div class="input-row">
+                        <span class="input-label">Password</span>
+                        <input type="password" id="passadmin" placeholder="Enter password" style="margin-right: 55%; width: 20%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+
+                    <div class="input-row">
+                        <label>
+                            <strong style="margin-left: 20px;">Consultant</strong>
+                        </label>
+                    </div>
+                    <div class="input-row">
+                        <span class="input-label">Username</span>
+                        <input type="text" id="userconsu" placeholder="Enter username" style="margin-right: 55%; width: 20%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                    <div class="input-row">
+                        <span class="input-label">Password</span>
+                        <input type="password" id="passconsu" placeholder="Enter password" style="margin-right: 55%; width: 20%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                    <div style="margin-top: 40px; display: flex; justify-content: center;"> <!-- Căn giữa -->
+                    <button class="btn" onclick="updateAccount()">Update Account</button>
+                    </div>
+            </div>
+            <div id="alert" class="tab-content">
+                <h4 style="text-align: left;">Aleart Settings</h4>
+
+                    <div class="input-row">
+                        <label>
+                            <strong style="margin-left: 20px;">Stay connected</strong>
+                        </label>
+                    </div>
+                    <!-- nut ấn thêm hàng mới -->
+                    <div class="table_component" style="margin-bottom: 10px;" >
+                        <div style="text-align: left; margin-bottom: 10px;">
+                        
+                            <table id="dataTable">
+                                <thead>
+                                    <tr>
+                                        <th>Protocol</th>
+                                        <th>IP 1</th>
+                                        <th>IP 2</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                
+                                </tbody>
+                            </table>
+                            
+                        </div>
+                    </div> 
+                    <div style="display: flex; justify-content: left;  margin-bottom: 50px; padding: 5px 10px;  font-size: 10px;">
+                    <button id="addRow" style="margin-left: 250px; background-color: rgb(158, 179, 225); color: white; border: none; cursor: pointer; padding: 5px 10px; border-radius: 5px;">+ Add</button>  
+                     </div>
+                    <div class="input-row">
+                        <label>
+                            <strong style="margin-left: 20px;">Send alert</strong>
+                        </label>
+                    </div>
+                    <div class="input-row">
+                        <span class="input-label">Phone</span>
+                        <input type="text" id="phone1" placeholder="Phone number 1" style="margin-left: 10%; width: 20%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                      
+                        <input type="text" id="phone2" placeholder="Phone number 2" style="margin-right: 35%; width: 20%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                    
+                    <div style="margin-top: 40px; display: flex; justify-content: center;"> <!-- Căn giữa -->
+                        <button class="btn" onclick="updateAlert()">Update Alert</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+    <!-- Popup và overlay -->
+    <div class="overlay" id="overlay"></div>
+    <div class="popup" id="popup">
+        <p>Setting successfully!</p>
+        <button onclick="closePopup()">Cancel</button>
+    </div>
+    
+    <script>
+        // Hàm thêm hàng mới
+        document.getElementById('addRow').onclick = function() {
+            // Tạo một hàng mới
+            const newRow = document.createElement('tr');
+    
+            newRow.innerHTML = `
+                <td><input type="text"  style="width: 100%; border: none; outline: none; font-size: 16px;"></td>
+                <td><input type="text"  style="width: 100%; border: none; outline: none; font-size: 16px;"></td>
+                <td><input type="email" style="width: 100%; border: none; outline: none; font-size: 16px;"></td>
+                <td><label class='switch'>"
+            "<input type='checkbox' id='switch1' onclick='toggleSwitch(1)' checked>"
+            "<span class='slider round'></span></label></td>
+            `;
+    
+            // Thêm hàng mới vào tbody
+            document.querySelector('#dataTable tbody').appendChild(newRow);
+        };
+    </script>
+
+    <script>
+        function logout() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "/login", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send("action=logout");
+
+        xhttp.onload = function () {
+            var response = JSON.parse(this.responseText);
+            if (response.success) {
+                alert(response.message); // Thông báo người dùng đã đăng xuất
+                window.location.href = "/"; // Chuyển hướng đến trang đăng nhập
+            } else {
+                alert("Logout failed!");
+            }
+        };
+        
+    }
+
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove('active');
+            }
+            tablinks = document.getElementsByClassName("tablink");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove('active');
+            }
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        function toggleInputs() {
+            document.getElementById('scanArpInterval').disabled = !document.getElementById('scanArpCheckbox').checked;
+            document.getElementById('honeypotIP').disabled = !document.getElementById('honeypotCheckbox').checked;
+            document.getElementById('detectArpInterval').disabled = !document.getElementById('detectArpCheckbox').checked;
+            document.getElementById('differentIps').disabled = !document.getElementById('detectArpCheckbox').checked;
+        }
+        
+        function clicksendwifiinfo(){
+            var xhttp1 = new XMLHttpRequest();
+        var ssid = document.getElementById("ssid").value;
+        var pass = document.getElementById("pass").value;
+        xhttp1.open("POST", "/wifiinfo", true);
+        xhttp1.send(ssid+'@'+pass+'@');
+        document.getElementById("demo").innerHTML = ssid+'@'+pass+'@';
+        }
+
+        function applySettings() {
+            let scanArpEnabled = document.getElementById('scanArpCheckbox').checked;
+            let scanArpInterval = document.getElementById('scanArpInterval').value;
+
+            let honeypotEnabled = document.getElementById('honeypotCheckbox').checked;
+            let honeypotIP = document.getElementById('honeypotIP').value;
+
+            let detectArpEnabled = document.getElementById('detectArpCheckbox').checked;
+            let detectArpInterval = document.getElementById('detectArpInterval').value;
+
+            let differentIps = document.getElementById('differentIps').value;
+
+            let settings = {
+                scanArpEnabled: scanArpEnabled,
+                scanArpInterval: scanArpInterval,
+                honeypotEnabled: honeypotEnabled,
+                honeypotIP: honeypotIP,
+                detectArpEnabled: detectArpEnabled,
+                detectArpInterval: detectArpInterval,
+                differentIps: differentIps
+            };
+
+            console.log(settings);
+        }
+
+        function updateAccount() {
+            // Lấy dữ liệu từ các ô nhập
+            let adminUsername = document.getElementById('useradmin').value;
+            let adminPassword = document.getElementById('passadmin').value;
+            let consultantUsername = document.getElementById('userconsu').value;
+            let consultantPassword = document.getElementById('passconsu').value;
+            // Tạo đối tượng để gửi dữ liệu
+            var data = {};
+
+            // Hàm kiểm tra và thêm thông tin vào đối tượng
+            function addIfNotEmpty(role, username, password) {
+                if (username !== "" || password !== "") {
+                    data[role] = {
+                        username: username,
+                        password: password
+                    };
+                }
+            }
+            // Tạo đối tượng chứa dữ liệu tài khoản
+            // Kiểm tra thông tin của admin
+            addIfNotEmpty("admin", adminUsername, adminPassword);
+            
+            // Kiểm tra thông tin của consultant
+            addIfNotEmpty("consultant", consultantUsername, consultantPassword);
+
+            // Chuyển đổi đối tượng thành JSON
+            var jsonData = JSON.stringify(data);
+
+            // Gửi yêu cầu POST với dữ liệu
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "/updateSetting", true);
+            xhttp.setRequestHeader("Content-Type", "application/json");
+            xhttp.send(jsonData);
+
+            // Xử lý phản hồi từ máy chủ (nếu cần)
+            xhttp.onload = function() {
+                if (xhttp.status === 200) {
+                    openPopup(); // Mở popup thông báo thành công
+                }
+            };
+            
+        }
+
+        let previousSettings = {};
+
+        // Hàm để áp dụng cài đặt
+        function applySettings() {
+            let scanArpEnabled = document.getElementById('scanArpCheckbox').checked;
+            let scanArpInterval = document.getElementById('scanArpInterval').value;
+
+            let honeypotEnabled = document.getElementById('honeypotCheckbox').checked;
+            let honeypotIP = document.getElementById('honeypotIP').value;
+            
+
+            let detectArpEnabled = document.getElementById('detectArpCheckbox').checked;
+            let detectArpInterval = document.getElementById('detectArpInterval').value;
+
+            let differentIps = document.getElementById('differentIps').value;
+
+            
+            // Tạo đối tượng chứa dữ liệu cài đặt mới
+            let newSettings = {
+                scanArpEnabled: scanArpEnabled,
+                scanArpInterval: scanArpInterval,
+                honeypotEnabled: honeypotEnabled,
+                honeypotIP: honeypotIP,
+                detectArpEnabled: detectArpEnabled,
+                detectArpInterval: detectArpInterval,
+                differentIps: differentIps
+            };
+            // In ra IP nếu honeypotEnabled là true
+            if (newSettings.honeypotEnabled) {
+                console.log('Honeypot IP:', newSettings.honeypotIP);
+            }
+            // Tạo đối tượng chỉ chứa những giá trị đã thay đổi
+            let changedSettings = {};
+
+            // So sánh với giá trị cũ và chỉ thêm những giá trị khác nhau
+            for (let key in newSettings) {
+                if (newSettings[key] !== previousSettings[key]) {
+                    changedSettings[key] = newSettings[key];
+                }
+            }
+
+            // Cập nhật giá trị cũ
+            previousSettings = newSettings;
+
+            // Chỉ gửi nếu có thay đổi
+            if (Object.keys(changedSettings).length > 0) {
+                console.log(changedSettings); // Kiểm tra dữ liệu trước khi gửi
+
+                // Gửi dữ liệu đã thay đổi đến server
+                fetch('/updateSetting', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(changedSettings),
+                })
+                
+            }
+            xhttp.onload = function() {
+                if (xhttp.status === 200) {
+                    openPopup(); // Mở popup thông báo thành công
+                }
+            };
+        }
+
+        // Hàm để khởi tạo giá trị ban đầu cho các cài đặt (gọi khi trang tải)
+        function initializeSettings() {
+            previousSettings = {
+                scanArpEnabled: document.getElementById('scanArpCheckbox').checked,
+                scanArpInterval: document.getElementById('scanArpInterval').value,
+                honeypotEnabled: document.getElementById('honeypotCheckbox').checked,
+                honeypotIP: document.getElementById('honeypotIP').value,
+                detectArpEnabled: document.getElementById('detectArpCheckbox').checked,
+                detectArpInterval: document.getElementById('detectArpInterval').value,
+                differentIps: document.getElementById('differentIps').value
+            };
+            
+        }
+
+        // Gọi hàm khởi tạo khi trang tải
+        window.onload = initializeSettings;
+
+        function openPopup() {
+            document.getElementById("overlay").classList.add("active");
+            document.getElementById("popup").classList.add("active");
+            }
+
+            function closePopup() {
+                document.getElementById("overlay").classList.remove("active");
+                document.getElementById("popup").classList.remove("active");
+            }
+    </script>
+</body>
+</html>
