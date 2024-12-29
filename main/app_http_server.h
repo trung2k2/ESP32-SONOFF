@@ -12,4 +12,5 @@ void http_set_callback_switch(void *cb);
 void http_set_callback_dht11(void *cb);
 void http_set_callback_slider(void *cb);
 void http_set_callback_wifiinfo(void *cb);
+
 #endif
