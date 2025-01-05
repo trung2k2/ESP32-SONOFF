@@ -23,11 +23,11 @@
 #include "esp_mac.h"
 #include "app_http_server.c"
 
-
+#define EXAMPLE_ESP_MAXIMUM_RETRY  5
 //provision_type_t provisition_type = PROVISION_SMARTCONFIG; //nếu dùng smartconfig
 provision_type_t provisition_type = PROVISION_ACCESSPOINT; //nếu dùng access point
 static EventGroupHandle_t s_wifi_event_group;
-
+static int s_retry_num = 0; 
 static const int WIFI_CONNECTED_BIT = BIT0;
 static const int ESPTOUCH_DONE_BIT = BIT1;
 static const int HTTP_CONFIG_DONE = BIT2;
@@ -41,7 +41,12 @@ static void event_handler(void* arg, esp_event_base_t event_base,
     ESP_LOGE(TAG, "Nhay vao ham event_handler");
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
         //xTaskCreate(smartconfig_example_task, "smartconfig_example_task", 4096, NULL, 3, NULL);
-        esp_wifi_connect();
+        if (s_retry_num < EXAMPLE_ESP_MAXIMUM_RETRY) {
+            esp_wifi_connect();
+            s_retry_num++;
+            ESP_LOGI(TAG, "retry to connect to the AP");
+        } 
+        ESP_LOGI(TAG,"connect to the AP fail");
     } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
         esp_wifi_connect();
         xEventGroupClearBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
@@ -49,6 +54,7 @@ static void event_handler(void* arg, esp_event_base_t event_base,
         ESP_LOGE(TAG, "Nhay vao ham got ip");
         ip_event_got_ip_t* event = (ip_event_got_ip_t*) event_data;
         ESP_LOGI(TAG, "got ip:" IPSTR, IP2STR(&event->ip_info.ip));
+        s_retry_num = 0;
         xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
     } 
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_AP_STACONNECTED) {
